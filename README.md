@@ -1,2 +1,25 @@
-# CS1083AdventureGame
-In our Tutorials we'll examine course content while live-coding a simple game
+
+Classes
+ * Game
+ * Map
+ * Obstacles (Monsters/Traps/Doors)
+ * Player
+  * Inventory
+ * Keys
+ * Tiles Wall/Air/
+ 
+ ```
+ ########   
+ #......#   
+ #...@..#   
+ #......####
+ #......+...
+ ###########
+ ```
+
+
+Things we do
+ * Walk around
+ * Interact
+  * Pick keys up
+
