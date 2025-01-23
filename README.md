@@ -23,3 +23,4 @@ Things we do
  * Interact
   * Pick keys up
 
+![AdventureGame Class Diagram](MainClassDiagram.png)
