@@ -4,5 +4,10 @@ public class Wall extends Tile {
 	public Wall() {
 		super('#');
 	}
-	
+
+	@Override
+	public void enter(Player p) throws CollisionException {
+		throw new CollisionException("You hit a wall!");
+	}
+		
 }

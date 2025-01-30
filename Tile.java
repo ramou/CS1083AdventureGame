@@ -9,4 +9,9 @@ public abstract class Tile {
 	public String toString() {
 		return symbol+"";
 	}
+	
+	public void enter(Player p) throws GameException {
+		throw new GameException("You can't go there!");
+	}
+	
 }
