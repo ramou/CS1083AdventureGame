@@ -1,8 +1,15 @@
+  
   public class Game {
-	private Map m = new Map();
+	private Map m = null;
+
+	public Game(String filename, String keyfile) {
+		m = new Map(filename, keyfile);
+		
+	}
 
 	public static void main(String[] args) {
-		Game g = new Game();
+		
+		Game g = new Game(args[0], args[1]);
 		g.play();
 
 	}

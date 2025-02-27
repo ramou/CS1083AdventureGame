@@ -1,34 +1,52 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class Map {
+	public static SoundPlayer sp;
+	
 	List<Tile> myMap;
 	public static List<String> messages = new ArrayList<>();
 	Player p = new Player();
 	int playerPosition;
+	int mapWidth = 0;
+	int mapHeight = 0;
 	Scanner inputs = new Scanner(System.in);
 
-private static String MAP_DATA =
-" ########***\n" + 
-" #a.....#***\n" + 
-" #...@..#***\n" + 
-" #......####\n" + 
-" #b.....A..B\n" + 
-" ###########\n";
+private String mapData = "";
 
 
 	public static List<Key> allKeys = new ArrayList<>();
 
 
-	public Map() {
-		allKeys.add(new Key('a', "A round key"));
-		allKeys.add(new Key('b', "A rectangular key"));
+	public Map(String mapFile, String keyFile) {
+		try {
+		sp = new SoundPlayer("sound_config.txt");
+		} catch(Exception e){}
+		try(BufferedReader br = new BufferedReader(new FileReader(mapFile))) {
+			String line;
+			while((line = br.readLine()) != null) {
+				mapWidth = line.length();
+				mapHeight++;
+				mapData += line + "\n";
+			}
+		} catch (IOException e) {
+			System.out.println("Your map file is broken.");
+		}
+		
+		makeKeys(keyFile);
+		
+		System.out.println(allKeys);
+		
+
 		
 		
 		myMap = new ArrayList<>();
 		int pos = 0;
-		for(String line : MAP_DATA.split("\n")) {
+		for(String line : mapData.split("\n")) {
 			for(char c : line.trim().toCharArray()) {
 				switch(c) {
 					case '#':
@@ -79,13 +97,13 @@ private static String MAP_DATA =
 		try {
 			switch(move) {
 				case 'w':
-					playerPosition += -11;
+					playerPosition += -mapWidth;
 				break;
 				case 'a':
 					playerPosition += -1;
 				break;
 				case 's':
-					playerPosition += +11;
+					playerPosition += +mapWidth;
 				break;
 				case 'd':
 					playerPosition += +1;
@@ -107,20 +125,34 @@ private static String MAP_DATA =
 			myMap.get(playerPosition).enter(p);
 		} catch (CollisionException e) {
 			playerPosition = oldPosition;
-			java.awt.Toolkit.getDefaultToolkit().beep();
+			//java.awt.Toolkit.getDefaultToolkit().beep();
+			sp.play(SoundPlayer.SOUNDS.BONK);
 			messages.add(e.getMessage());
 		}
 		
 	}
 	
 	public void drawMap() {
-		for(int y = 0; y < 6; ++y) {
-			for(int x = 0; x < 11; ++x) {
-				if(y*11+x == playerPosition) System.out.print("@");
-				else System.out.print(myMap.get(y*11+x));
+		for(int y = 0; y < mapHeight; ++y) {
+			for(int x = 0; x < mapWidth; ++x) {
+				if(y*mapWidth+x == playerPosition) System.out.print("@");
+				else System.out.print(myMap.get(y*mapWidth+x));
 			}
 			System.out.println();
 		}
+	}
+
+	public void makeKeys(String keyFile){
+		
+		try(BufferedReader br = new BufferedReader(new FileReader(keyFile))) {
+			String line;
+			while((line = br.readLine()) != null) {		
+				allKeys.add(new Key(line.charAt(0), line.substring(2)));
+			}
+		} catch (IOException e) {
+			System.out.println("Your key file is broken.");
+		}
+		
 	}
 
 }

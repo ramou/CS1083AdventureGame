@@ -23,6 +23,7 @@ public class Floor extends Tile {
 		if(!keys.isEmpty()) {
 			for(Key k: keys) {
 				p.add(k);
+				Map.sp.play(SoundPlayer.SOUNDS.ITEM_PICKUP);
 				Map.messages.add("You have found " + k);
 			}
 			keys.clear();
