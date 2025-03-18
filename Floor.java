@@ -39,7 +39,7 @@ public class Floor extends Tile {
 		obstacles.removeAll(solved);
 		
 		if(!obstacles.isEmpty()) {
-			throw new CollisionException("You bumped into a " + obstacles.get(0).getClass());
+			throw new CollisionException("You bumped into a " + obstacles.get(0).getClass().getSimpleName());
 		}
 		
 		

@@ -16,6 +16,7 @@ public class Door extends Obstacle {
 		
 		for(Key k: p.getKeys()) {
 			if(key.equals(k)) {
+				Map.messages.add("You used " + key);
 				return true;
 			}
 		}
