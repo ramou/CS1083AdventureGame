@@ -73,6 +73,10 @@ private String mapData = "";
 							if(c == key.getSymbol()) {
 								f.add(key);
 							}
+							if(c+32 == key.getSymbol()) {
+								System.out.println("Foudn doo");
+								f.add(new Door(key));
+							}
 						}
 						
 				}

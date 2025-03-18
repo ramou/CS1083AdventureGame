@@ -9,6 +9,7 @@
 
 	public static void main(String[] args) {
 		
+		
 		Game g = new Game(args[0], args[1]);
 		g.play();
 
