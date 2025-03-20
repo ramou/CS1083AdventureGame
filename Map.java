@@ -74,7 +74,7 @@ private String mapData = "";
 								f.add(key);
 							}
 							if(c+32 == key.getSymbol()) {
-								System.out.println("Foudn doo");
+								System.out.println("Found door");
 								f.add(new Door(key));
 							}
 						}
