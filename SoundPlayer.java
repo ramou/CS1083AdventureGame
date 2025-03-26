@@ -2,8 +2,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -12,6 +14,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class SoundPlayer {
+	Queue<SOUNDS> soundQueue =  new LinkedList<>();
+	
     private Map<SOUNDS, Clip> soundMap = new HashMap<>();
 
     public SoundPlayer(String config_file) throws IOException, UnsupportedAudioFileException, LineUnavailableException  {
@@ -29,21 +33,36 @@ public class SoundPlayer {
         BONK, ITEM_PICKUP
     }
 
-    public void play(SOUNDS s) {
-        Clip c = soundMap.get(s);
-
-        //Restart the clip
-        if(c.isRunning()) {
-            c.stop();
-        }
-
-        //Queue it up
-        c.setFramePosition(0);
-
-        //Hit it!
-        c.start();
-
+    public void play(SOUNDS... sounds) {
+		for(SOUNDS s: sounds) {
+			soundQueue.offer(s);
+		}
+		play();
     }
+	
+	public void play() {
+		for(SOUNDS s: soundQueue) {
+			Clip c = soundMap.get(s);
+			
+
+			//Restart the clip
+			if(c.isRunning()) {
+				c.stop();
+			}
+
+			//Queue it up
+			c.setFramePosition(0);
+
+			//Hit it!
+			c.start();
+			
+			while(c.isRunning()) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {}
+			}
+		}
+	}
 
 
 }

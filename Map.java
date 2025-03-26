@@ -11,7 +11,9 @@ public class Map {
 	List<Tile> myMap;
 	public static List<String> messages = new ArrayList<>();
 	Player p = new Player();
-	int playerPosition;
+	Tile playerPosition;
+	
+	
 	int mapWidth = 0;
 	int mapHeight = 0;
 	Scanner inputs = new Scanner(System.in);
@@ -39,10 +41,6 @@ private String mapData = "";
 		
 		makeKeys(keyFile);
 		
-		System.out.println(allKeys);
-		
-
-		
 		
 		myMap = new ArrayList<>();
 		int pos = 0;
@@ -60,11 +58,15 @@ private String mapData = "";
 						//We need to consider door logic!
 					break;
 					case '@':
-						myMap.add(new Floor());
-						playerPosition = pos;
+						Tile t = new Floor();
+						myMap.add(t);
+						playerPosition = t;
 					break;
 					case '*':
 						myMap.add(new Unplayable());
+					break;
+					case '<':
+						myMap.add(new Stairs());
 					break;
 					default:
 						Floor f = new Floor();
@@ -74,20 +76,41 @@ private String mapData = "";
 								f.add(key);
 							}
 							if(c+32 == key.getSymbol()) {
-								System.out.println("Found door");
 								f.add(new Door(key));
 							}
 						}
 						
 				}
 				pos ++;
-			}
-			
-			
-			//System.out.println(line);
-				
+			}			
 				
 		}
+		
+					for(int y = 0; y < mapHeight; ++y) {
+				for(int x = 0; x < mapWidth; ++x) {
+					Tile n = Tile.SENTINEL;
+					Tile e = Tile.SENTINEL;
+					Tile s = Tile.SENTINEL;
+					Tile w = Tile.SENTINEL;
+					if(y > 0) {
+						n = myMap.get((y-1)*mapWidth + x);
+					}
+					if(y < (mapHeight-2)) {
+						s = myMap.get((y+1)*mapWidth + x);
+					}
+					if(x > 0) {
+						w = myMap.get(y*mapWidth + (x-1));
+					}
+					if(x < (mapWidth-2)) {
+						e = myMap.get(y*mapWidth + (x+1));
+					}
+					
+					myMap.get(y*mapWidth + x).setAdjacent(n,e,s,w);
+					
+					
+
+				}			
+			}
 		
 	}
 	
@@ -97,20 +120,25 @@ private String mapData = "";
 		System.out.println("use WASD to do stuff");
 		char move = inputs.nextLine().charAt(0);
 		//TODO: We're using nextLine  now, but we'll buffer moves later
-		int oldPosition = playerPosition;
+		Tile oldPosition = playerPosition;
 		try {
 			switch(move) {
 				case 'w':
-					playerPosition += -mapWidth;
+					playerPosition.getNorth().enter(p);
+					playerPosition = playerPosition.getNorth();
+					
 				break;
 				case 'a':
-					playerPosition += -1;
+					playerPosition.getWest().enter(p);
+					playerPosition = playerPosition.getWest();
 				break;
 				case 's':
-					playerPosition += +mapWidth;
+					playerPosition.getSouth().enter(p);
+					playerPosition = playerPosition.getSouth();
 				break;
 				case 'd':
-					playerPosition += +1;
+					playerPosition.getEast().enter(p);
+					playerPosition = playerPosition.getEast();
 				break;
 				case 'i':
 					for(Key k: p.getKeys()) {
@@ -126,12 +154,17 @@ private String mapData = "";
 				
 			}
 
-			myMap.get(playerPosition).enter(p);
 		} catch (CollisionException e) {
 			playerPosition = oldPosition;
 			//java.awt.Toolkit.getDefaultToolkit().beep();
 			sp.play(SoundPlayer.SOUNDS.BONK);
 			messages.add(e.getMessage());
+		} catch (WinException e) {
+			sp.play(SoundPlayer.SOUNDS.ITEM_PICKUP,
+				SoundPlayer.SOUNDS.ITEM_PICKUP,
+				SoundPlayer.SOUNDS.ITEM_PICKUP);
+
+			throw new QuitException(e.toString());
 		}
 		
 	}
@@ -139,7 +172,7 @@ private String mapData = "";
 	public void drawMap() {
 		for(int y = 0; y < mapHeight; ++y) {
 			for(int x = 0; x < mapWidth; ++x) {
-				if(y*mapWidth+x == playerPosition) System.out.print("@");
+				if(myMap.get(y*mapWidth+x) == playerPosition) System.out.print("@");
 				else System.out.print(myMap.get(y*mapWidth+x));
 			}
 			System.out.println();

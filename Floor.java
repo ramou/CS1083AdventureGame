@@ -6,6 +6,10 @@ public class Floor extends Tile {
 	
 	private List<Obstacle> obstacles = new ArrayList<>();
 	
+	public Floor(char c) {
+		super(c);
+	}
+	
 	public Floor() {
 		super('.');
 	}
@@ -27,7 +31,7 @@ public class Floor extends Tile {
 	}	
 	
 	@Override
-	public void enter(Player p) throws CollisionException {
+	public void enter(Player p) throws GameException {
 		
 		List<Obstacle> solved = new ArrayList<>();
 		
