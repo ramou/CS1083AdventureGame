@@ -19,7 +19,7 @@ public class Map {
 	int mapHeight = 0;
 	Scanner inputs = new Scanner(System.in);
 
-private String mapData = "";
+	private String mapData = "";
 
 
 	public static List<Key> allKeys = new ArrayList<>();
@@ -202,6 +202,7 @@ private String mapData = "";
 	}
 	
 	public void drawMap() {
+		System.out.println("\033[2J");
 		for(int y = 0; y < mapHeight; ++y) {
 			for(int x = 0; x < mapWidth; ++x) {
 				if(myMap.get(y*mapWidth+x) == playerPosition) System.out.print("@");
