@@ -202,6 +202,9 @@ public class Map {
 	}
 	
 	public void drawMap() {
+		//Hide cursor
+		System.out.print("\033[?25l"); 
+		//Move the cursor to 1,1 (1-based... gross!)
 		System.out.println("\033[1;1H");
 		for(int y = 0; y < mapHeight; ++y) {
 			for(int x = 0; x < mapWidth; ++x) {
@@ -210,7 +213,10 @@ public class Map {
 			}
 			System.out.println();
 		}
+		//Nuke any text in the rest of the screen after the map
 		System.out.println("\033[0J");
+		//Show the cursor again
+		System.out.print("\033[?25h");
 		
 	}
 
