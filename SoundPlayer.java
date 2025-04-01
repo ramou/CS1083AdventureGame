@@ -30,7 +30,7 @@ public class SoundPlayer {
     }
 
     public static enum SOUNDS {
-        BONK, ITEM_PICKUP
+        BONK, ITEM_PICKUP, SQUEEK, CLAP, DEATH
     }
 
     public void play(SOUNDS... sounds) {
@@ -41,7 +41,8 @@ public class SoundPlayer {
     }
 	
 	public void play() {
-		for(SOUNDS s: soundQueue) {
+		SOUNDS s = null;
+		while((s = soundQueue.poll())!=null) {
 			Clip c = soundMap.get(s);
 			
 

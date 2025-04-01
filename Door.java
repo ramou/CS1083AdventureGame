@@ -12,7 +12,7 @@ public class Door extends Obstacle {
 		this.key = key;
 	}
 	
-	public boolean canSolve(Player p) {
+	public boolean canSolve(Player p) throws GameException {
 		
 		for(Key k: p.getKeys()) {
 			if(key.equals(k)) {

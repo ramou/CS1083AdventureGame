@@ -29,10 +29,9 @@
 				
 				m.doAction();
 
-				
-			
 			}
 		} catch (QuitException e) {
+			try{Thread.sleep(5000);}catch(Exception e2){}
 			System.out.println(e.getMessage());
 		} catch (GameException e) {
 			System.out.println(e.getMessage());

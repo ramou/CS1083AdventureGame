@@ -1,2 +1,5 @@
 BONK|Bonk.wav
 ITEM_PICKUP|Item.wav
+SQUEEK|Squeek.wav
+CLAP|Clap.wav
+DEATH|Death.wav

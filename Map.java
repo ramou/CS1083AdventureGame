@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.*;
 
 public class Map {
 	public static SoundPlayer sp;
@@ -41,6 +42,18 @@ private String mapData = "";
 		
 		makeKeys(keyFile);
 		
+		List<Integer> pastDeaths = new ArrayList<>();
+		try(BufferedReader br = new BufferedReader(new FileReader("deaths.txt"))) {
+			String line;
+			while((line = br.readLine()) != null) {
+				pastDeaths.add(Integer.valueOf(line));
+			}
+		} catch (IOException e) {
+			System.out.println("Your map file is broken.");
+		}
+		
+		
+		
 		
 		myMap = new ArrayList<>();
 		int pos = 0;
@@ -67,6 +80,12 @@ private String mapData = "";
 					break;
 					case '<':
 						myMap.add(new Stairs());
+					break;
+					case '~':
+					
+						Floor f2 = new Floor();
+						myMap.add(f2);						
+						f2.add(new Trap(pastDeaths.contains(pos)));
 					break;
 					default:
 						Floor f = new Floor();
@@ -135,7 +154,7 @@ private String mapData = "";
 				case 's':
 					playerPosition.getSouth().enter(p);
 					playerPosition = playerPosition.getSouth();
-				break;
+				break;  
 				case 'd':
 					playerPosition.getEast().enter(p);
 					playerPosition = playerPosition.getEast();
@@ -159,11 +178,24 @@ private String mapData = "";
 			//java.awt.Toolkit.getDefaultToolkit().beep();
 			sp.play(SoundPlayer.SOUNDS.BONK);
 			messages.add(e.getMessage());
-		} catch (WinException e) {
-			sp.play(SoundPlayer.SOUNDS.ITEM_PICKUP,
-				SoundPlayer.SOUNDS.ITEM_PICKUP,
-				SoundPlayer.SOUNDS.ITEM_PICKUP);
+		} catch (TrapException e) {
+			for(int i = 0; i < myMap.size(); ++i) {
+				if(myMap.get(i) == e.getTile()) {
+					System.out.println("You died at " + i);
+					try {
+					PrintWriter pw = new PrintWriter(new FileWriter("deaths.txt", true));
+					pw.println(i);
+					pw.close();
+					} catch (IOException e2) {e2.printStackTrace();}
+				}
 
+			}
+			throw new QuitException(e.toString());
+		} catch (WinException e) {
+			sp.play(SoundPlayer.SOUNDS.CLAP,
+				SoundPlayer.SOUNDS.CLAP,
+				SoundPlayer.SOUNDS.CLAP);
+			try{Thread.sleep(2500);}catch(Exception e2){}
 			throw new QuitException(e.toString());
 		}
 		

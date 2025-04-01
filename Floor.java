@@ -6,6 +6,10 @@ public class Floor extends Tile {
 	
 	private List<Obstacle> obstacles = new ArrayList<>();
 	
+	public List<Obstacle> getObstacles() {
+		return obstacles;
+	}
+	
 	public Floor(char c) {
 		super(c);
 	}
@@ -34,16 +38,48 @@ public class Floor extends Tile {
 	public void enter(Player p) throws GameException {
 		
 		List<Obstacle> solved = new ArrayList<>();
-		
-		for(Obstacle o: obstacles) {
-			if(o.canSolve(p)) {
-				solved.add(o);
+		try {
+			for(Obstacle o: obstacles) {
+				if(o.canSolve(p)) {
+					solved.add(o);
+				}
 			}
+		} catch (TrapException trape) {
+			throw new TrapException(trape.getMessage(), this);
 		}
+		
 		obstacles.removeAll(solved);
 		
 		if(!obstacles.isEmpty()) {
 			throw new CollisionException("You bumped into a " + obstacles.get(0).getClass().getSimpleName());
+		}
+		
+		List<Obstacle> adjacent = new LinkedList<>();
+		if(getNorth() instanceof Floor) {
+			Floor f = (Floor) getNorth();
+			adjacent.addAll(f.getObstacles());	
+		}
+		
+		if(getSouth() instanceof Floor) {
+			Floor f = (Floor) getSouth();
+			adjacent.addAll(f.getObstacles());	
+		}
+		
+		if(getWest() instanceof Floor) {
+			Floor f = (Floor) getWest();
+			adjacent.addAll(f.getObstacles());	
+		}
+		
+		if(getEast() instanceof Floor) {
+			Floor f = (Floor) getEast();
+			adjacent.addAll(f.getObstacles());	
+		}
+
+		
+		for(Obstacle o : adjacent) {
+			if(o instanceof Trap) {
+				Map.sp.play(SoundPlayer.SOUNDS.SQUEEK);
+			}
 		}
 		
 		

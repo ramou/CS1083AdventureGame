@@ -1,8 +1,7 @@
 import java.util.*;
 
 public class Stairs extends Floor {
-	
-	
+
 	public Stairs() {
 		super('<');
 	}
