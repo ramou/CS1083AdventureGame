@@ -202,7 +202,7 @@ public class Map {
 	}
 	
 	public void drawMap() {
-		System.out.println("\033[2J");
+		System.out.println("\033[1;1H");
 		for(int y = 0; y < mapHeight; ++y) {
 			for(int x = 0; x < mapWidth; ++x) {
 				if(myMap.get(y*mapWidth+x) == playerPosition) System.out.print("@");
@@ -210,6 +210,8 @@ public class Map {
 			}
 			System.out.println();
 		}
+		System.out.println("\033[0J");
+		
 	}
 
 	public void makeKeys(String keyFile){

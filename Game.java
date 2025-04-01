@@ -16,7 +16,7 @@
 	}
 	
 	public void play() {
-	
+		System.out.println("\033[2J");
 		try {
 			while(true) {
 			//Should we do this in the main method, or a play method?
